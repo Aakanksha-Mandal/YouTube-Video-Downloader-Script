@@ -31,13 +31,25 @@ try:
     print(colors.MAGENTA + "Thumbnail: " + colors.ENDC + colors.BLUE + yt.thumbnail_url + colors.ENDC)
     print(colors.MAGENTA + "Length: " + colors.ENDC + convert_seconds_to_hh_mm_ss(yt.length))
 
-    available_streams = yt.streams.filter(progressive=True)
-    print(colors.YELLOW + "\nAvailable Resolutions:" + colors.ENDC)
-    for i, stream in enumerate(available_streams):
-        print(colors.YELLOW + "   " + f"{i+1}) {stream.resolution}" + colors.ENDC)
+    download_option = input(colors.YELLOW + "\nDownload Video(V) or Audio(A): " + colors.ENDC).upper()
 
-    selection = int(input(colors.YELLOW + "Enter the number corresponding to your desired resolution: " + colors.ENDC))
-    selected_stream = available_streams[selection - 1]
+    if download_option == 'V':
+        available_streams = yt.streams.filter(progressive=True, file_extension='mp4')
+        print(colors.YELLOW + "\nAvailable Resolutions:" + colors.ENDC)
+        for i, stream in enumerate(available_streams):
+            print(colors.YELLOW + "   " + f"{i+1}) {stream.resolution}" + colors.ENDC)
+        selection = int(input(colors.YELLOW + "Enter the number corresponding to your desired resolution: " + colors.ENDC))
+        selected_stream = available_streams[selection - 1]
+    elif download_option == 'A':
+        available_audio_streams = yt.streams.filter(only_audio=True)
+        available_audio_streams = sorted(available_audio_streams, key=lambda x: int(x.abr.replace('kbps', '')))
+        print(colors.YELLOW + "\nAvailable MP3 Options:" + colors.ENDC)
+        for i, stream in enumerate(available_audio_streams):
+            print(colors.YELLOW + "   " + f"{i+1}) Audio ({stream.abr})" + colors.ENDC)
+        selection = int(input(colors.YELLOW + "Enter the number corresponding to your desired option: " + colors.ENDC))
+        selected_stream = available_audio_streams[selection - 1]
+    else:
+        raise ValueError("Invalid option selected. Please choose 'V' for video or 'A' for audio.")
 
     download_dir = input(colors.ORANGE + "\nEnter the download directory: " + colors.ENDC)
     if not os.path.exists(download_dir):
