@@ -24,7 +24,7 @@ This repository contains a simple Python script to download YouTube videos using
 ## Usage
 Run the script and follow the prompts:
 ```bash
-python downloader.py
+python youtube_downloader.py
 ```
 
 ## Connect
